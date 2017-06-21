@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset='utf-8' />
+<link rel='stylesheet' href='../lib/cupertino/jquery-ui.min.css' />
+<link href='../fullcalendar.min.css' rel='stylesheet' />
+<link href='../fullcalendar.print.min.css' rel='stylesheet' media='print' />
+<script src='../lib/moment.min.js'></script>
+<script src='../lib/jquery.min.js'></script>
+<script src='../fullcalendar.min.js'></script>
+<script src='../locale/pt-br.js'></script>
+<script>
+	$(document).ready(function() {
+		var location = ''
+
+		$('#calendar').fullCalendar({
+			minTime: "08:00:00",
+			maxTime: "20:00:00",
+			defaultView: 'agendaWeek',
+			defaultEventMinutes: 120,
+			selectable: 'true',
+			selectHelper: 'true',
+			theme: true,
+			header: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'agendaWeek,agendaDay,listMonth'
+			},
+
+			select: function(start, end, allDay)
+			{
+				end =  $.fullCalendar.moment(start);
+        		end.add(110, 'minutes');
+				/*
+					after selection user will be promted for enter title for event.
+				*/
+
+				/*
+					if title is enterd calendar will add title and event into fullCalendar.
+			*/
+				var confirmation = confirm('Deseja reservar o horário selecionado?');
+				if(confirmation) {
+					$('#calendar').fullCalendar('renderEvent',
+			        {
+			            start: start,
+			            end: end,
+			            allDay: false
+			            },
+			            true // stick the event
+			        );
+
+					setTimeout(function(){
+					   window.location = 'localhost/reservar/' + $('#location').val() + '/' + start.format('HHmm');
+					}, 2000);
+				}
+				$('#calendar').fullCalendar('unselect');
+			},
+			navLinks: true, // can click day/week names to navigate views
+			eventLimit: true, // allow "more" link when too many events
+			events: {
+				url: 'http://localhost/projetotransversal1/login-registration-php-new/get_test.php',
+				data: function() {
+					return {
+						'local': $('#location').val(),
+						'class': $('#class').val(),
+					}
+				}
+			}
+		});
+
+		$('#location').on('change', function() {
+		  $('#calendar').fullCalendar('refetchEvents');
+		})
+		$('#class').on('change', function() {
+		  $('#calendar').fullCalendar('refetchEvents');
+		})
+
+	});
+
+
+
+</script>
+<style>
+	body {
+		margin: 40px 10px;
+		padding: 0;
+		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+		font-size: 14px;
+	}
+
+	#calendar {
+		max-width: 900px;
+		margin: 0 auto;
+	}
+
+</style>
+</head>
+<body>
+	<select id='location'>
+	  <option value="">TODAS</option>
+	  <option value="B1 01/5 LAB 1">Laboratório 1: Eletrônica e Princípios de Comunicação </option>
+	  <option value="B1 01/6 LAB 2">Laboratório 2: Circuitos Elétricos e Eletrônica</option>
+	  <option value="B1 01/7 LAB 3">Laboratório 3: Sistemas Digitais</option>
+	  <option value="ENE AT 11">ENE AT 11</option>
+	  <option value="ENE AT 13">ENE AT 13</option>
+	  <option value="ENE AT 15">ENE AT 15</option>
+	  <option value="ENE AT 17">ENE AT 17</option>
+	  <option value="ENE AT 19">ENE AT 19</option>
+	  <option value="CDT">CDT</option>
+	  <option value="LCCC">LCCC</option>
+	  <option value="LABREDES">LABREDES</option>
+	  <option value="Laboratório de Instalações Elétricas e Eletricidade Básica">Laboratório de Instalações Elétricas e Eletricidade Básica</option>
+	  <option value="Laboratório de Conversão de Energia">Laboratório de Conversão de Energia</option>
+	  <option value="Laboratório de Materiais Elétricos e Magnéticos">Laboratório de Materiais Elétricos e Magnéticos</option>
+	  <option value="Laboratório de Eletromagnetismo e Antenas">Laboratório de Eletromagnetismo e Antenas</option>
+	  <option value="Laboratório de Controle e Automação">Laboratório de Controle e Automação</option>
+	  <option value="Auditório BT 11/15">Auditório BT 11/15</option>
+	  <option value="SG 11">SG 11</option>
+	</select>
+	<select id='class'>
+		<option value="">TODOS</option>
+		<option value="ALGORITMO E ESTRUTURA DE DADOS">ALGORITMO E ESTRUTURA DE DADOS</option>
+		<option value="ANALISE DE SISTEMAS DE POTENCIA">ANALISE DE SISTEMAS DE POTENCIA</option>
+		<option value="ANÁLISE DINÂMICA LINEAR">ANÁLISE DINÂMICA LINEAR</option>
+		<option value="ARQUITETURA DE PROCESSADORES DIGITAIS ">ARQUITETURA DE PROCESSADORES DIGITAIS</option>
+		<option value="ARQUITETURA E PROTOCOLOS DE REDES">ARQUITETURA E PROTOCOLOS DE REDES</option>
+		<option value="AVALIAÇÃO DE DESEMPENHO DE REDES E SISTEMAS">AVALIAÇÃO DE DESEMPENHO DE REDES E SISTEMAS</option>
+		<option value="CIRCUITOS ELÉTRICOS">CIRCUITOS ELÉTRICOS</option>
+	  	<option value="CIRCUITOS ELÉTRICOS 2">CIRCUITOS ELÉTRICOS 2</option>
+		<option value="CIRCUITOS POLIFASICOS">CIRCUITOS POLIFASICOS</option>
+		<option value="COMPUTACAO PARA ENGENHARIA">COMPUTACAO PARA ENGENHARIA</option>
+		<option value="COMUNICACOES DIGITAIS">COMUNICACOES DIGITAIS</option>
+		<option value="COMUNICAÇÕES MÓVEIS">COMUNICAÇÕES MÓVEIS</option>
+		<option value="COMUNICACOES OPTICAS">COMUNICACOES OPTICAS</option>
+		<option value="CONTROLE DE PROCESSOS">CONTROLE DE PROCESSOS</option>
+		<option value="CONTROLE DIGITAL">CONTROLE DIGITAL</option>
+	  	<option value="CONTROLE DINÂMICO">CONTROLE DINÂMICO</option>
+		<option value="CONTROLE PARA AUTOMAÇÃO">CONTROLE PARA AUTOMAÇÃO</option>
+		<option value="CONVERSAO DE ENERGIA">CONVERSAO DE ENERGIA</option>
+		<option value="CONVERSÃO ELETROMECÂNICA DE ENERGIA">CONVERSÃO ELETROMECÂNICA DE ENERGIA</option>
+		<option value="DISPOSITIVOS E CIRCUITOS ELETRÔNICOS">DISPOSITIVOS E CIRCUITOS ELETRÔNICOS</option>
+		<option value="ELETRICIDADE BÁSICA">ELETRICIDADE BÁSICA</option>
+		<option value="ELETROMAGNETISMO 1">ELETROMAGNETISMO 1</option>
+		<option value="ELETROMAGNETISMO 2">ELETROMAGNETISMO 2</option>
+		<option value="ELETRÔNICA">ELETRÔNICA</option>
+		<option value="ELETRÔNICA 2">ELETRÔNICA 2</option>
+		<option value="FUNDAMENTOS DE REDES">FUNDAMENTOS DE REDES</option>
+		<option value="FUNDAMENTOS DE REDES 2">FUNDAMENTOS DE REDES 2</option>
+		<option value="GERÊNCIA DE REDES E SISTEMAS">GERÊNCIA DE REDES E SISTEMAS</option>
+		<option value="INSTALAÇÕES ELÉTRICAS">INSTALAÇÕES ELÉTRICAS</option>
+		<option value="INSTALAÇÕES ELETRICAS">INSTALAÇÕES ELETRICAS</option>
+		<option value="INSTRUMENTACAO DE CONTROLE">INSTRUMENTACAO DE CONTROLE</option>
+		<option value="INSTRUMENTAÇÃO DE CONTROLE DE PROCESSOS">INSTRUMENTAÇÃO DE CONTROLE DE PROCESSOS</option>
+		<option value="INTRODUÇÃO A ENGENHARIA DE REDES DE COMUNICACÃO">INTRODUÇÃO A ENGENHARIA DE REDES DE COMUNICACÃO</option>
+		<option value="INTRODUCAO A ENGENHARIA ELETRICA">INTRODUCAO A ENGENHARIA ELETRICA</option>
+		<option value="INTRODUÇÃO AO CONTROLE INTELIGENTE NUMÉRICO">INTRODUÇÃO AO CONTROLE INTELIGENTE NUMÉRICO</option>
+		<option value="LABORATÓRIO DE ANÁLISE DINÂMICA LINEAR">LABORATÓRIO DE ANÁLISE DINÂMICA LINEAR</option>
+		<option value="LABORATÓRIO DE ARQUITETURA DE PROCESSADORES DIGITAIS">LABORATÓRIO DE ARQUITETURA DE PROCESSADORES DIGITAIS</option>
+		<option value="LABORATÓRIO DE ARQUITETURA E PROTOCOLOS DE REDES">LABORATÓRIO DE ARQUITETURA E PROTOCOLOS DE REDES</option>
+		<option value="LABORATÓRIO DE CIRCUITOS ELÉTRICO 2">LABORATÓRIO DE CIRCUITOS ELÉTRICO 2</option>
+		<option value="LABORATÓRIO DE CIRCUITOS ELÉTRICOS">LABORATÓRIO DE CIRCUITOS ELÉTRICOS</option>
+		<option value="LABORATÓRIO DE CONTROLE DE PROCESSOS">LABORATÓRIO DE CONTROLE DE PROCESSOS</option>
+		<option value="LABORATÓRIO DE CONTROLE DINÂMICO">LABORATÓRIO DE CONTROLE DINÂMICO</option>
+		<option value="LABORATORIO DE CONVERSAO DE ENERGIA">LABORATORIO DE CONVERSAO DE ENERGIA</option>
+		<option value="LABORATÓRIO DE CONVERSÃO ELETROMECÂNICA DE ENERGIA">LABORATÓRIO DE CONVERSÃO ELETROMECÂNICA DE ENERGIA</option>
+		<option value="LABORATÓRIO DE DISPOSITIVOS E CIRCUITOS ELETRÔNICOS">LABORATÓRIO DE DISPOSITIVOS E CIRCUITOS ELETRÔNICOS</option>
+		<option value="LABORATÓRIO DE ELETRICIDADE BÁSICA">LABORATÓRIO DE ELETRICIDADE BÁSICA</option>
+		<option value="LABORATÓRIO DE ELETROMAGNETISMO 2">LABORATÓRIO DE ELETROMAGNETISMO 2</option>
+		<option value="LABORATÓRIO DE ELETRÔNICA">LABORATÓRIO DE ELETRÔNICA</option>
+		<option value="LABORATÓRIO DE ELETRÔNICA 2">LABORATÓRIO DE ELETRÔNICA 2</option>
+		<option value="LABORATÓRIO DE INSTALAÇÕES ELÉTRICAS">LABORATÓRIO DE INSTALAÇÕES ELÉTRICAS</option>
+		<option value="LABORATÓRIO DE MATERIAIS ELÉTRICOS E MAGNÉTICOS">LABORATÓRIO DE MATERIAIS ELÉTRICOS E MAGNÉTICOS</option>
+		<option value="LABORATÓRIO DE PRINCÍPIOS DE COMUNICAÇÃO">LABORATÓRIO DE PRINCÍPIOS DE COMUNICAÇÃO</option>
+		<option value="LABORATÓRIO DE SISTEMAS DIGITAIS">LABORATÓRIO DE SISTEMAS DIGITAIS</option>
+		<option value="LABORATÓRIO DE SISTEMAS MICROPROCESSADOS">LABORATÓRIO DE SISTEMAS MICROPROCESSADOS</option>
+		<option value="MAQUINAS ELETRICAS">MAQUINAS ELETRICAS</option>
+		<option value="MATERIAIS ELÉTRICOS E MAGNÉTICOS">MATERIAIS ELÉTRICOS E MAGNÉTICOS</option>
+		<option value="METODOLOGIA E DESENVOLVIMENTO DE SOFTWARE">METODOLOGIA E DESENVOLVIMENTO DE SOFTWARE</option>
+		<option value="PRINCÍPIOS DE COMUNICAÇÃO">PRINCÍPIOS DE COMUNICAÇÃO</option>
+<!--		<option value="CONTROLE DE PROCESSOS">PROJETO FINAL DE GRADUAÇÃO 1</option>
+		<option value="CONTROLE DE PROCESSOS">PROJETO FINAL DE GRADUAÇÃO 2</option> -->
+		<option value="PROJETO TRANSVERSAL EM REDES DE COMUNICAÇÃO 1">PROJETO TRANSVERSAL EM REDES DE COMUNICAÇÃO 1</option>
+		<option value="REDES LOCAIS">REDES LOCAIS</option>
+		<option value="SEGURANÇA DE REDES">SEGURANÇA DE REDES</option>
+		<option value="SINAIS E SISTEMAS EM TEMPO CONTÍNUO">SINAIS E SISTEMAS EM TEMPO CONTÍNUO</option>
+		<option value="SISTEMAS DE COMUNICACOES 1">SISTEMAS DE COMUNICACOES 1</option>
+		<option value="SISTEMAS DE INFORMAÇÃO DISTRIBUÍDOS">SISTEMAS DE INFORMAÇÃO DISTRIBUÍDOS</option>
+		<option value="SISTEMAS DIGITAIS">SISTEMAS DIGITAIS</option>
+		<option value="SISTEMAS MICROPROCESSADOS">SISTEMAS MICROPROCESSADOS</option>
+		<option value="SISTEMAS OPERACIONAIS DE REDES">SISTEMAS OPERACIONAIS DE REDES</option>
+		<option value="TOPICOS EM ENGENHARIA">TOPICOS EM ENGENHARIA</option>
+		<option value="TÓPICOS EM REDES DE COMUNICAÇÃO 1">TÓPICOS EM REDES DE COMUNICAÇÃO 1</option>
+		<option value="TÓPICOS EM REDES DE COMUNICAÇÃO 2">TÓPICOS EM REDES DE COMUNICAÇÃO 2</option>
+		<option value="TÓPICOS ESPECIAIS EM ENGENHARIA BIOMÉDICA">TÓPICOS ESPECIAIS EM ENGENHARIA BIOMÉDICA</option>
+		<option value="TÓPICOS ESPECIAIS EM MICROELETRÔNICA">TÓPICOS ESPECIAIS EM MICROELETRÔNICA</option>
+<!--		<option value="CONTROLE DE PROCESSOS">TRABALHO DE CONCLUSÃO DE CURSO 1</option>
+		<option value="CONTROLE DE PROCESSOS">TRABALHO DE CONCLUSÃO DE CURSO 2</option> -->
+
+	</select>
+
+	<div id='calendar'></div>
+
+</body>
+</html>
