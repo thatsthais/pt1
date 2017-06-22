@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<!--[if IE 8]>			<html class="ie ie8"> <![endif]-->
-<!--[if IE 9]>			<html class="ie ie9"> <![endif]-->
-<!--[if gt IE 9]><!-->	<html> <!--<![endif]-->
+<!--[if IE 8]>          <html class="ie ie8"> <![endif]-->
+<!--[if IE 9]>          <html class="ie ie9"> <![endif]-->
+<!--[if gt IE 9]><!-->  <html> <!--<![endif]-->
 <head>
       <meta charset="utf-8">
       <title>ReservENE</title>
@@ -37,12 +37,12 @@
       <link rel="apple-touch-icon" sizes="144x144" href="img/ico/apple-touch-icon-144.png">
       <!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
       <!--[if lt IE 9]>
-      <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
-      <script src="js/respond.min.js"></script>
-      <![endif]-->
+     <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+     <script src="js/respond.min.js"></script>
+     <![endif]-->
       <!--[if IE]>
-      <link rel="stylesheet" href="css/ie.css">
-      <![endif]-->
+     <link rel="stylesheet" href="css/ie.css">
+     <![endif]-->
 </head>
 <body data-spy="scroll" data-target="#navigation" data-offset="75">
       <!-- Page Preloader -->
@@ -61,6 +61,7 @@
 
             <!-- Header -->
             <header id="section1" class="parallax-slider">
+
                   <!-- Navigation -->
                   <div id="navigation">
                         <nav class="navbar navbar-custom cl-effect-21" role="navigation">
@@ -86,8 +87,9 @@
                                                       <!-- Collect the nav links, forms, and other content for toggling -->
                                                       <div class="collapse navbar-collapse" id="menu">
                                                             <ul class="nav navbar-nav navbar-right">
-                                                                  <li><a href="login.html">Login</a></li>
-                                                                  <li><a href="register.html">Cadastro</a></li>
+                                                                  <li><a href="fullcalendar/demos/theme.html" onclick="location.href='fullcalendar/demos/theme.html'">Mapa de Salas</a></li>
+                                                                  <li><a href="index.php" onclick="location.href='index.php'">Login</a></li>
+                                                                  <li><a href="register.php" onclick="location.href='register.php'">Cadastro</a></li>
                                                             </ul>
                                                       </div>
                                                       <!-- /.Navbar-collapse -->
@@ -114,8 +116,21 @@
                                     <h3> O projeto ReservENE tem como objetivo facilitar a comunicação entre os estudantes da Faculdade de Tecnologia e
                                         a secretaria do departamento. Deseja reservar uma sala? Saiba com antecedência onde e quando há disponibilidade e reserve!</h3>
                               </div>
+
+                                <div class="col-md-12 big-title wow bounceIn">
+                                    <h2>Como usar?</h2>
+                              </div>
+                              <div class="col-md-12 sub-title text-left wow slideInRight">
+                                        <h3> Para visualizar os eventos, basta clicar na opção mapa de salas acima.</br> Para realizar o pedido de uma reserva:</br>
+                                             1 - Realizar o cadastro no site;</br>
+                                             2 - Acessar a página do mapa de salas;</br>
+                                             3 - Buscar o horário e a sala desejados;</br>
+                                             4 - Clicar sobre o horário desejado no calendário;</br>
+                                             5 - Preencher o formulário e aguardar a resposta da secretaria.</h3>
+                              </div>
+
                               <div class="row">
-                                    <div class="col-md-10">
+                                    <div class="col-md-6">
                                           <img src="img/tela1.png" alt="About Us" class="img-responsive">
                                     </div>
                               </div>
@@ -129,13 +144,13 @@
                   </div>
 
                   <!-- Google Map -->
-                  <div class="mapouter"><div class="gmap_canvas">
-                      <iframe width="2000" height="300" id="gmap_canvas" style="pointer-events:none" src="https://maps.google.com/maps?q=Faculdade%20de%20Tecnologia&t=&z=17&ie=UTF8&iwloc=&output=embed"
-                      frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
-                  </iframe>google map <a href="http://www.embedgooglemap.net">embedgooglemap.net</a></div>
-                  <style>.mapouter{overflow:hidden;height:300px;width:2000px;}.gmap_canvas {background:none!important;height:300px;width:2000px;}
-                      </style>
-                  </div>
+                  <!-- <div class="mapouter"><div class="gmap_canvas">
+                     <iframe width="2000" height="300" id="gmap_canvas" style="pointer-events:none" src="https://maps.google.com/maps?q=Faculdade%20de%20Tecnologia&t=&z=17&ie=UTF8&iwloc=&output=embed"
+                     frameborder="0" scrolling="no" marginheight="0" marginwidth="0">
+                 </iframe>google map <a href="http://www.embedgooglemap.net">embedgooglemap.net</a></div>
+                 <style>.mapouter{overflow:hidden;height:300px;width:2000px;}.gmap_canvas {background:none!important;height:300px;width:2000px;}
+                     </style>
+                 </div> -->
                   <!-- /Google Map -->
 
     <footer class="footer-wrap text-center">
