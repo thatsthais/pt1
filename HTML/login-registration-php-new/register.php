@@ -32,6 +32,10 @@
         $usertype = strip_tags($usertype);
         $usertype = htmlspecialchars($usertype);
 
+        $terms = trim($_POST['terms']);
+        $terms = strip_tags($terms);
+        $terms = htmlspecialchars($terms);
+
 
 
         // basic name validation
@@ -188,7 +192,7 @@
                                           <div class="col-md-2 mob-logo">
                                                 <div class="row">
                                                       <div class="site-logo">
-                                                            <a href="site-reservene.html"><img src="logo1.png" alt="ReservENE"></a>
+                                                            <a href="index.html"><img src="logo1.png" alt="ReservENE"></a>
                                                       </div>
                                                 </div>
                                           </div>
@@ -206,7 +210,7 @@
                                                       <div class="collapse navbar-collapse" id="menu">
                                                             <ul class="nav navbar-nav navbar-right">
                                                                   <li><a href="calendar.html" onclick="location.href='calendar.html'">Mapa de Salas</a></li>
-                                                                  <li><a href="index.php" onclick="location.href='index.php'">Login</a></li>
+                                                                  <li><a href="login.php" onclick="location.href='login.php'">Login</a></li>
                                                                   <li><a href="register.php" onclick="location.href='register.php'">Cadastro</a></li>
                                                             </ul>
                                                       </div>
@@ -292,9 +296,11 @@
 			            </div>
 
 
-			  			<input type="radio" name="usertype" value="0" checked> ALUNO<br>
+			  			<input type="radio" name="usertype" value="0" checked> ALUNO</input>
+                        <div class="col-md-6">
+                            <input type="radio" name="terms" value="0" checked> Li e concordo com os <a target="_blank" href="termos-de-uso.pdf">termos de uso.</a><br>
+                        </div>
 			  			<input type="radio" name="usertype" value="1"> PROFESSOR<br>
-
 
 
 			            <div class="form-group">
@@ -310,7 +316,7 @@
 			            </div>
 
 			            <div class="form-group">
-			            	<a href="index.php">Já tenho cadastro...</a>
+			            	<a href="login.php">Já tenho cadastro...</a>
 			            </div>
 
 			        </div>
