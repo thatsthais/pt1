@@ -1,4 +1,45 @@
-<!DOCTYPE html>
+
+<?php
+	ob_start();
+	session_start();
+	require_once 'dbconnect.php';
+
+	// if session is not set this will redirect to login page
+//	if( !isset($_SESSION['user']) ) {
+///		header("Location: index.php");
+//		exit;
+//	}
+	// select loggedin users detail
+//	$res=mysql_query("SELECT * FROM users WHERE userRegistration=".$_SESSION['user']);
+//	$userRow=mysql_fetch_array($res);
+
+
+	// A sessão precisa ser iniciada em cada página diferente
+	if (!isset($_SESSION)) session_start();
+
+	// Verifica se não há a variável da sessão que identifica o usuário
+	if (!isset($_SESSION['user'])) {
+		// Destrói a sessão por segurança
+		session_destroy();
+		// Redireciona o visitante de volta pro login
+		header("Location: login.php"); exit;
+	}
+
+	$user = $_SESSION['user'];
+
+	$query = mysql_query("SELECT userType FROM users WHERE userRegistration = $user");
+	$row = mysql_fetch_array($query);
+	if($row['userType'] != 2)
+	{
+		session_destroy();
+		// Redireciona o visitante de volta pro login
+		header("Location: login.php"); exit;
+	}
+
+	?>
+
+
+
 <html>
 <head>
 	<meta charset="utf-8">
@@ -72,7 +113,7 @@
                                           <div class="col-md-2 mob-logo">
                                                 <div class="row">
                                                       <div class="site-logo">
-                                                            <a href="index.html"><img src="logo1.png" alt="ReservENE"></a>
+                                                            <a href="funcionario.php"><img src="logo1.png" alt="ReservENE"></a>
                                                       </div>
                                                 </div>
                                           </div>
@@ -89,9 +130,8 @@
                                                       <!-- Collect the nav links, forms, and other content for toggling -->
                                                       <div class="collapse navbar-collapse" id="menu">
                                                             <ul class="nav navbar-nav navbar-right">
-                                                                  <li><a href="aluno.html" onclick="location.href='aluno.html'">Mapa de Salas</a></li>
-                                                                  <li><a href="aluno-hist.html" onclick="location.href='aluno-hist.html'">Minhas Requisições</a></li>
-                                                                  <li><a href="index.html" onclick="location.href='index.html'">Sair</a></li>
+                                                                  <li><a href="funcionario.php" onclick="location.href='funcionario.php'">Requisições</a></li>
+                                                                  <li><a href="logout.php" onclick="location.href='logout.php'">Sair</a></li>
                                                             </ul>
                                                       </div>
                                                       <!-- /.Navbar-collapse -->
@@ -112,7 +152,7 @@
 						<!-- Title row -->
 						<div class="row">
 			                <div class="col-lg-12">
-			                    <h1 class="page-header">Minhas Requisições</h1>
+			                    <h1 class="page-header">Histórico</h1>
 			                </div>
 			                <!-- /.col-lg-12 -->
 			            </div>

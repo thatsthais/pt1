@@ -1,4 +1,40 @@
-<!DOCTYPE html>
+
+<?php
+	ob_start();
+	session_start();
+	require_once 'dbconnect.php';
+
+	// if session is not set this will redirect to login page
+//	if( !isset($_SESSION['user']) ) {
+///		header("Location: index.php");
+//		exit;
+//	}
+	// select loggedin users detail
+//	$res=mysql_query("SELECT * FROM users WHERE userRegistration=".$_SESSION['user']);
+//	$userRow=mysql_fetch_array($res);
+
+
+	// A sessão precisa ser iniciada em cada página diferente
+	if (!isset($_SESSION)) session_start();
+
+	// Verifica se não há a variável da sessão que identifica o usuário
+	if (!isset($_SESSION['user'])) {
+		// Destrói a sessão por segurança
+		session_destroy();
+		// Redireciona o visitante de volta pro login
+		header("Location: login.php"); exit;
+	}
+	$user = $_SESSION['user'];
+
+	$query = mysql_query("SELECT userType FROM users WHERE userRegistration = $user");
+	$row = mysql_fetch_array($query);
+	if($row['userType'] != 2)
+	{
+		session_destroy();
+		// Redireciona o visitante de volta pro login
+		header("Location: login.php"); exit;
+	}
+?>
 <html>
 <head>
 	<meta charset="utf-8">
@@ -72,7 +108,7 @@
                                           <div class="col-md-2 mob-logo">
                                                 <div class="row">
                                                       <div class="site-logo">
-                                                            <a href="index.html"><img src="logo1.png" alt="ReservENE"></a>
+                                                            <a href="funcionario.php"><img src="logo1.png" alt="ReservENE"></a>
                                                       </div>
                                                 </div>
                                           </div>
@@ -89,9 +125,8 @@
                                                       <!-- Collect the nav links, forms, and other content for toggling -->
                                                       <div class="collapse navbar-collapse" id="menu">
                                                             <ul class="nav navbar-nav navbar-right">
-                                                                  <li><a href="professor.html" onclick="location.href='professor.html'">Mapa de Salas</a></li>
-                                                                  <li><a href="professor-hist.html" onclick="location.href='professor-hist.html'">Histórico</a></li>
-                                                                  <li><a href="index.html" onclick="location.href='index.html'">Sair</a></li>
+                                                                  <li><a href="funcionario.php" onclick="location.href='funcionario.php'">Requisições</a></li>
+                                                                  <li><a href="index.php" onclick="location.href='index.php'">Sair</a></li>
                                                             </ul>
                                                       </div>
                                                       <!-- /.Navbar-collapse -->
@@ -112,7 +147,7 @@
 						<!-- Title row -->
 						<div class="row">
 			                <div class="col-lg-12">
-			                    <h1 class="page-header">Histórico</h1>
+			                    <h1 class="page-header">Requisições</h1>
 			                </div>
 			                <!-- /.col-lg-12 -->
 			            </div>
@@ -122,11 +157,14 @@
                             <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
                                 <thead>
                                     <tr>
+										<th>#</th>
+										<th>Aceito?</th>
                                         <th>Nome</th>
-                                        <th>Usuário</th>
+                                        <th>Tipo</th>
                                         <th>Sala</th>
                                         <th>Horário</th>
-                                        <th>Status</th>
+										<th>Monitoria?</th>
+                                        <th>Detalhes</th>
                                     </tr>
                                 </thead>
 
@@ -198,8 +236,56 @@
 
     <!-- Page-Level Demo Scripts - Tables - Use for reference -->
     <script>
+
+	var oTable;
+
+	function approveTime(pk) {
+		$.post('reserva_result.php', {option: "1", pk: JSON.stringify(pk)}, function() {
+					oTable.ajax.reload();
+				}
+	)};
+
+	function declineTime(pk) {
+		$.post('reserva_result.php', {option: "0", pk: JSON.stringify(pk)}, function() {
+					oTable.ajax.reload();
+				}
+	)};
+
+
     $(document).ready(function() {
-        $('#dataTables-example').DataTable({
+
+        oTable = $('#dataTables-example').DataTable({
+			"ajax": "get_reservas.php",
+			'columnDefs': [{
+				'targets': 0,
+				'searchable': false,
+				'orderable': false,
+				'className': 'dt-body-center',
+				'render': function (data, type, row, meta){
+					if(row[1] == -1)
+					{
+						return '<i class="fa fa-check" onclick="approveTime(' + data + ')" aria-hidden="true"></i><i class="fa fa-ban" onclick="declineTime(' + data + ')" aria-hidden="true"></i>';
+
+					}
+					else if(row[1] == 0)
+					{
+						return '<i class="fa fa-check" onclick="approveTime(' + data + ')" aria-hidden="true"></i><i class="fa fa-ban" aria-hidden="true" style="color:red"></i>';
+					}
+					else if(row[1] == 1)
+					{
+						return '<i class="fa fa-check" aria-hidden="true" style="color:green"></i><i class="fa fa-ban" onclick="declineTime(' + data + ')" aria-hidden="true"></i>';
+					}
+				}
+			},
+			{
+				"targets": [1],
+				"visible": false
+			},
+			{
+				"targets": [5],
+				"orderable": false
+			},
+			],
             "responsive": true,
             "language": {
                 "sEmptyTable": "Nenhum registro encontrado",

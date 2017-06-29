@@ -2,7 +2,7 @@
     ob_start();
 	session_start();
     if( isset($_SESSION['user'])!="" ){
-        header("Location: home.php");
+        header("Location: index.php");
     }
     include_once 'dbconnect.php';
 
@@ -102,13 +102,13 @@
                 {
                     // Student
                     unset($usertype);
-                    header("Location: http://www.globo.com");
+                    header('Location: aluno.php');
                 }
                 else
                 {
                     // Teacher
                     unset($usertype);
-                    header("Location: http://www.uol.com.br");
+                	header('Location: professor.php');
                 }
             } else {
                 $errTyp = "danger";
@@ -192,7 +192,7 @@
                                           <div class="col-md-2 mob-logo">
                                                 <div class="row">
                                                       <div class="site-logo">
-                                                            <a href="index.html"><img src="logo1.png" alt="ReservENE"></a>
+                                                            <a href="index.php"><img src="logo1.png" alt="ReservENE"></a>
                                                       </div>
                                                 </div>
                                           </div>

@@ -4,10 +4,10 @@
     require_once 'dbconnect.php';
 
     // it will never let you open index(login) page if session is set
-    if ( isset($_SESSION['user'])!="" ) {
+   /* if ( isset($_SESSION['user'])!="" ) {
         header("Location: home.php");
         exit;
-    }
+    } */
 
     $error = false;
 
@@ -41,13 +41,63 @@
 
             $password = hash('sha256', $pass); // password hashing using SHA256
 
-            $res=mysql_query("SELECT userRegistration, userName, userPass FROM users WHERE userEmail='$email'");
+            $res=mysql_query("SELECT userRegistration, userName, userType, userPass FROM users WHERE userEmail='$email'");
             $row=mysql_fetch_array($res);
-            $count = mysql_num_rows($res); // if uname/pass correct it returns must be 1 row
+            $count = mysql_num_rows($res); // if name/pass correct it returns must be 1 row
 
             if( $count == 1 && $row['userPass']==$password ) {
+                //$_SESSION['user'] = $row['userRegistration'];
+               // $resultado = mysql_fetch_assoc($res);
+
+                // Se a sessão não existir, inicia uma
+                //if (!isset($_SESSION)) session_start();
+
+                // Salva os dados encontrados na sessão
                 $_SESSION['user'] = $row['userRegistration'];
-                header("Location: home.php");
+                $_SESSION['nome'] = $row['userName'];
+                $_SESSION['tipo'] = $row['userType'];
+               // $_SESSION['UsuarioNivel'] = $row['nivel'];
+
+                //selecionando dados da tabela
+           /*     $sql = "SELECT * FROM users";
+                $query = mysql_query($sql);
+                while($sql = mysql_fetch_array($query)){
+                	$id = $sql["UserType"];
+                	$nome = $sql["nome"];
+                	//onde $nome é a variavel que rerpresenta a coluna "nome" nessa
+                	//mesma tabela.
+                	echo "$nome"; //exibindo o que foi achado na coluna "nome".
+                } */
+
+
+                $_user_tipo = $row['userType'];
+
+                if ($_user_tipo == 0)
+                {
+                	header('Location: aluno.php');
+                } elseif ($_user_tipo == 1)
+                {
+                	header('Location: professor.php');
+                } elseif ($_user_tipo == 2)
+                {
+                    header('Location: funcionario.php');
+                }
+                exit();
+
+
+            /*    if ( isset($_SESSION['tipo']) == 0)
+                {
+                	header("Location: home.php"); exit;
+                }
+                elseif ( isset($_SESSION['tipo']) == 1)
+                {
+                	header("Location: home2.php"); exit;
+                } */
+
+                // Redireciona o visitante
+               // header("Location: restrito.php"); exit;
+
+               // header("Location: home.php"); exit;
             } else {
                 $errMSG = "Login ou senha incorretos, tente novamente...";
             }
@@ -128,7 +178,7 @@
                                           <div class="col-md-2 mob-logo">
                                                 <div class="row">
                                                       <div class="site-logo">
-                                                            <a href="index.html"><img src="logo1.png" alt="ReservENE"></a>
+                                                            <a href="index.php"><img src="logo1.png" alt="ReservENE"></a>
                                                       </div>
                                                 </div>
                                           </div>
@@ -233,7 +283,7 @@
 			            <div class="form-group">
 			            	<a href="register.php">Não tenho cadastro...</a>
 			            </div>
-                        
+
 
 			        </div>
 

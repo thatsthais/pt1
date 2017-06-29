@@ -39,7 +39,7 @@
     while ($row = mysql_fetch_array($fetch, MYSQL_ASSOC))
     {
         $startDate = '2017-01-01';
-        $endDate = '2017-07-01';
+        $endDate = '2017-07-07s';
         $endDate = strtotime($endDate);
 
         if($row['dia'] == 'S'):
@@ -66,10 +66,38 @@
 			$row_array['location'] = $row['local'];
             array_push($return_arr,$row_array);
         }
-
-
-
     }
+
+	if($class == "")
+	{
+		if($local == "")
+		{
+			$fetch=mysql_query("SELECT * FROM reservas INNER JOIN disciplina ON reservas.disciplina_fk = disciplina.codigo WHERE accepted = 1") or die (mysql_error());
+		}
+		else
+		{
+			$fetch=mysql_query("SELECT * FROM reservas INNER JOIN disciplina ON reservas.disciplina_fk = disciplina.codigo WHERE accepted = 1 AND reservas.local = '$local'") or die (mysql_error());
+		}
+
+		while ($row = mysql_fetch_array($fetch, MYSQL_ASSOC))
+	    {
+			if($row['monitoria'] == 1)
+			{
+				$row_array['title'] = 'MONITORIA: ' . $row['nome'];
+			}
+			else
+			{
+				$row_array['title'] = 'RESERVADA';
+			}
+	        $row_array['start'] = $row['date_start'];
+			$row_array['end'] = $row['date_end'];
+			$row_array['location'] = $row['local'];
+
+	        array_push($return_arr,$row_array);
+	    }
+	}
+
+
 
     echo json_encode($return_arr);
 

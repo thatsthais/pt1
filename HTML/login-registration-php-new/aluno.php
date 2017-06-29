@@ -1,4 +1,40 @@
 
+<?php
+	ob_start();
+	session_start();
+	require_once 'dbconnect.php';
+
+	// if session is not set this will redirect to login page
+//	if( !isset($_SESSION['user']) ) {
+///		header("Location: index.php");
+//		exit;
+//	}
+	// select loggedin users detail
+//	$res=mysql_query("SELECT * FROM users WHERE userRegistration=".$_SESSION['user']);
+//	$userRow=mysql_fetch_array($res);
+
+
+	// A sessão precisa ser iniciada em cada página diferente
+	if (!isset($_SESSION)) session_start();
+
+	// Verifica se não há a variável da sessão que identifica o usuário
+	if (!isset($_SESSION['user'])) {
+		// Destrói a sessão por segurança
+		session_destroy();
+		// Redireciona o visitante de volta pro login
+		header("Location: login.php"); exit;
+	}
+	$user = $_SESSION['user'];
+
+	$query = mysql_query("SELECT userType FROM users WHERE userRegistration = $user");
+	$row = mysql_fetch_array($query);
+	if($row['userType'] != 0)
+	{
+		session_destroy();
+		// Redireciona o visitante de volta pro login
+		header("Location: login.php"); exit;
+	}
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -46,11 +82,6 @@
    <link rel="stylesheet" href="css/ie.css">
    <![endif]-->
    <style>
-   	body {
-   		padding: 0;
-   		font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
-   		font-size: 14px;
-   	}
 
    	#calendar {
    		max-width: 900px;
@@ -95,6 +126,7 @@
 	$(document).ready(function() {
 
 		$('#calendar').fullCalendar({
+			timezone: 'local',
 			minTime: "08:00:00",
 			maxTime: "20:00:00",
 			defaultView: 'agendaWeek',
@@ -119,22 +151,30 @@
 				/*
 					if title is enterd calendar will add title and event into fullCalendar.
 			*/
-				var confirmation = confirm('Deseja reservar o horário selecionado?');
-				if(confirmation) {
-					$('#calendar').fullCalendar('renderEvent',
-					{
-						start: start,
-						end: end,
-						allDay: false
-						},
-						true // stick the event
-					);
+			$('#calendar').fullCalendar('renderEvent',
+			{
+				start: start,
+				end: end,
+				allDay: false
+				},
+				false // stick the event
+			);
 
-					setTimeout(function(){
-					   window.location = 'localhost/reservar/' + $('#location').val() + '/' + start.format('HHmm');
-					}, 2000);
-				}
-				$('#calendar').fullCalendar('unselect');
+			$("#myModalForm").modal();
+
+			$( "#btnSubmitModal" ).click(function() {
+			  var monitoria = $('input[name=monitoria]:checked').val();
+			  var description = $("#description").val();
+			  var location = $("#location").val();
+			  var selected_class = $("#selected_class").val();
+			  var start_date = moment(start.format('YYYY/MM/DD HH:mm:ss')).format("YYYY-MM-DD HH:mm:ss");
+			  var end_date = moment(end.format('YYYY/MM/DD HH:mm:ss')).format("YYYY-MM-DD HH:mm:ss");
+
+			  $.post('reservar.php', {start: JSON.stringify(start_date), end: JSON.stringify(end_date), monitoria: JSON.stringify(monitoria), class: JSON.stringify(selected_class), location: JSON.stringify(location), description: JSON.stringify(description)})
+		  });
+
+		  	$('#calendar').fullCalendar("refetchEvents");
+
 			},
 			navLinks: true, // can click day/week names to navigate views
 			eventLimit: true, // allow "more" link when too many events
@@ -186,7 +226,7 @@
                                           <div class="col-md-2 mob-logo">
                                                 <div class="row">
                                                       <div class="site-logo">
-                                                            <a href="index.html"><img src="logo1.png" alt="ReservENE"></a>
+                                                            <a href="aluno.php"><img src="logo1.png" alt="ReservENE"></a>
                                                       </div>
                                                 </div>
                                           </div>
@@ -203,9 +243,9 @@
                                                       <!-- Collect the nav links, forms, and other content for toggling -->
                                                       <div class="collapse navbar-collapse" id="menu">
                                                             <ul class="nav navbar-nav navbar-right">
-                                                                  <li><a href="professor.html" onclick="location.href='professor.html'">Mapa de Salas</a></li>
-                                                                  <li><a href="professor-hist.html" onclick="location.href='professor-hist.html'">Minhas requisições</a></li>
-                                                                  <li><a href="index.html" onclick="location.href='index.html'">Sair</a></li>
+                                                                  <li><a href="aluno.php" onclick="location.href='aluno.php'">Mapa de Salas</a></li>
+                                                                  <li><a href="aluno-hist.php" onclick="location.href='aluno-hist.php'">Minhas requisições</a></li>
+                                                                  <li><a href="logout.php" onclick="location.href='logout.php'">Sair</a></li>
                                                             </ul>
                                                       </div>
                                                       <!-- /.Navbar-collapse -->
@@ -327,145 +367,14 @@
 							  		<option value="CONTROLE DE PROCESSOS">TRABALHO DE CONCLUSÃO DE CURSO 2</option> -->
 
 							  	</select>
-									<div id="calendar"></div>
-							  </div>
-							  <div class="modal fade" id="myModal1" role="dialog">
-								 <div class="modal-dialog modal-md" id="tamanho">
-
-								   <!-- Modal content-->
-										   <div class="modal-content">
-											 <div class="modal-header">
-											   <button type="button" class="close" data-dismiss="modal">&times;</button>
-											   <h4 class="modal-title">Detalhes</h4>
-											 </div>
-											 <div class="modal-body">
-											  <h5 class="salai" style="text-align: center; font-size: 20px;">Ferramentas das Salas e Auditórios:</h5>
-											   <table style="width:100%; padding: 10px 0px;">
-												   <tr>
-													 <th>Laboratórios do SG-11</th>
-													 <th>Auditório do SG-11</th>
-
-												   </tr>
-												   <tr>
-													 <td>Até 45 pessoas</td>
-													 <td>Até 50 pessoas</td>
-
-												   </tr>
-												   <tr>
-													 <td>Até 25 computadores</td>
-													 <td>Nenhum computador</td>
-
-												   </tr>
-												   <tr>
-													 <td>1 quadro branco</td>
-													 <td>1 quadro-de-giz</td>
-
-												   </tr>
-												   <tr>
-													 <td>1 projetor</td>
-													 <td>1 projetor</td>
-												   </tr>
-												   <tr>
-													 <td>2 ar-condicionados</td>
-													 <td>2 ar-condicionados</td>
-
-												   </tr>
-												 </table>
-											 </div>
-											 <div class="modal-footer">
-											   <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-											 </div>
-										   </div>
-
-										 </div>
-									   </div>
+							</div>
 
 
-							  <div class="modal fade" id="myModal" role="dialog">
-							      <div class="modal-dialog modal-lg" id="tamanho">
-
-							        <!-- Modal content-->
-							                <div class="modal-content">
-							                  <div class="modal-header">
-							                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-							                    <h4 class="modal-title">Detalhes</h4>
-							                  </div>
-							                  <div class="modal-body">
-							                   <h5 class="salai" style="text-align: center; font-size: 20px;">Ferramentas das Salas e Auditórios:</h5>
-							                    <table style="width:100%; padding: 10px 0px;">
-							                        <tr>
-							                          <th>AT-11</th>
-													  <th>AT-13</th>
-												      <th>AT-15</th>
-													  <th>AT-19</th>
-							                          <th>Auditório ENE</th>
-							                          <th>Lab-Redes</th>
-							                          <th>LCCC</th>
-
-							                        </tr>
-							                        <tr>
-							                          <td>Até 50 pessoas</td>
-							                          <td>Até 50 pessoas</td>
-													  <td>Até 50 pessoas</td>
-													  <td>Até 50 pessoas</td>
-							                          <td>Até 120 pessoas</td>
-													  <td>Até 40 pessoas</td>
-													  <td>Até 40 pessoas</td>
-
-							                        </tr>
-													<tr>
-							                          <td>Nenhum computador</td>
-							                          <td>Nenhum computador</td>
-													  <td>Nenhum computador</td>
-													  <td>Nenhum computador</td>
-							                          <td>Nenhum computador</td>
-													  <td>Até 40 computadores</td>
-													  <td>Até 40 computadores</td>
-
-							                        </tr>
-													<tr>
-							                          <td>1 quadro-de-giz</td>
-							                          <td>1 quadro-de-giz</td>
-							                          <td>1 quadro-de-giz</td>
-													  <td>1 quadro-de-giz</td>
-													  <td>1 quadro-de-giz</td>
-													  <td>1 quadro branco</td>
-													  <td>1 quadro branco</td>
-
-							                        </tr>
-							                        <tr>
-							                          <td>1 projetor</td>
-													  <td>1 projetor</td>
-													  <td>1 projetor</td>
-													  <td>1 projetor</td>
-													  <td>1 projetor</td>
-													  <td>2 projetores</td>
-													  <td>1 projetor</td>
-
-							                        </tr>
-							                        <tr>
-							                          <td>2 ar-condicionados</td>
-							                          <td>2 ar-condicionados</td>
-													  <td>2 ar-condicionados</td>
-													  <td>2 ar-condicionados</td>
-													  <td>5 ar-condicionados</td>
-													  <td>2 ar-condicionados</td>
-													  <td>2 ar-condicionados</td>
-
-							                        </tr>
-							                      </table>
-							                  </div>
-							                  <div class="modal-footer">
-							                    <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
-							                  </div>
-							                </div>
-
-							              </div>
-							            </div>
 						  </div>
+						  	<div id="calendar"></div>
 						  <div class="blog-divider"></div>
 						  <div class="col-md-6" >
-						  	<h2>Mapa Faculdade de Tecnologia</h2>
+						  	<h2>Mapa FT</h2>
 						  		<img src="ft.png" alt="Mapa FT" style="width:450px;height:350px;">
 						  <a href="#myModal" data-toggle="modal" data-target="#myModal" <i="" class="fa fa-info-circle"></a>
 					  </div>
@@ -500,4 +409,259 @@
 </div>
 </div>
 </body>
+<div class="modal fade" id="myModalForm" role="dialog">
+   <div class="modal-dialog modal-md" id="tamanho">
+
+	 <!-- Modal content-->
+			 <div class="modal-content">
+			   <div class="modal-header">
+				 <button type="button" class="close" data-dismiss="modal">&times;</button>
+				 <h4 class="modal-title"></h4>
+			   </div>
+			   <div class="modal-body">
+				<h5 class="salai" style="text-align: center; font-size: 20px;">Formulário de Requisição de Salas</h5>
+				<form>
+					<div class="form-group">
+					  <label for="monitoria_label">Monitoria?</label><br>
+					  <div class="radio">
+						  <label><input type="radio" class="form-control" id="monitoria" name="monitoria" value="1">Sim</label>
+					  </div>
+					  <div class="radio">
+						  <label><input type="radio" class="form-control" id="monitoria" name="monitoria" value="0" checked>Não</label>
+					  </div>
+					  <!--	  <form action="">
+								  <input type="radio" id="monitoria" name="monitoria" value="1"> Sim<br>
+								  <input type="radio" id="monitoria" name="monitoria" value="0"> Não<br>
+						  </form> -->
+					  </br>
+							<div class="form-group">
+							  <label>Disciplina:</br><select name="selected_class" id="selected_class">
+						    <!--  <option value="">TODOS</option> -->
+								  <option value="ALGORITMOS E ESTRUTURA DE DADOS">ALGORITMOS E ESTRUTURA DE DADOS</option>
+								  <option value="ANALISE DE SISTEMAS DE POTENCIA">ANALISE DE SISTEMAS DE POTENCIA</option>
+								  <option value="ANÁLISE DINÂMICA LINEAR">ANÁLISE DINÂMICA LINEAR</option>
+								  <option value="ARQUITETURA DE PROCESSADORES DIGITAIS ">ARQUITETURA DE PROCESSADORES DIGITAIS</option>
+								  <option value="ARQUITETURA E PROTOCOLOS DE REDES">ARQUITETURA E PROTOCOLOS DE REDES</option>
+								  <option value="AVALIAÇÃO DE DESEMPENHO DE REDES E SISTEMAS">AVALIAÇÃO DE DESEMPENHO DE REDES E SISTEMAS</option>
+								  <option value="CIRCUITOS ELÉTRICOS">CIRCUITOS ELÉTRICOS</option>
+								  <option value="CIRCUITOS ELÉTRICOS 2">CIRCUITOS ELÉTRICOS 2</option>
+								  <option value="CIRCUITOS POLIFASICOS">CIRCUITOS POLIFASICOS</option>
+								  <option value="COMPUTACAO PARA ENGENHARIA">COMPUTACAO PARA ENGENHARIA</option>
+								  <option value="COMUNICACOES DIGITAIS">COMUNICACOES DIGITAIS</option>
+								  <option value="COMUNICAÇÕES MÓVEIS">COMUNICAÇÕES MÓVEIS</option>
+								  <option value="COMUNICACOES OPTICAS">COMUNICACOES OPTICAS</option>
+								  <option value="CONTROLE DE PROCESSOS">CONTROLE DE PROCESSOS</option>
+								  <option value="CONTROLE DIGITAL">CONTROLE DIGITAL</option>
+								  <option value="CONTROLE DINÂMICO">CONTROLE DINÂMICO</option>
+								  <option value="CONTROLE PARA AUTOMAÇÃO">CONTROLE PARA AUTOMAÇÃO</option>
+								  <option value="CONVERSAO DE ENERGIA">CONVERSAO DE ENERGIA</option>
+								  <option value="CONVERSÃO ELETROMECÂNICA DE ENERGIA">CONVERSÃO ELETROMECÂNICA DE ENERGIA</option>
+								  <option value="DISPOSITIVOS E CIRCUITOS ELETRÔNICOS">DISPOSITIVOS E CIRCUITOS ELETRÔNICOS</option>
+								  <option value="ELETRICIDADE BÁSICA">ELETRICIDADE BÁSICA</option>
+								  <option value="ELETROMAGNETISMO 1">ELETROMAGNETISMO 1</option>
+								  <option value="ELETROMAGNETISMO 2">ELETROMAGNETISMO 2</option>
+								  <option value="ELETRÔNICA">ELETRÔNICA</option>
+								  <option value="ELETRÔNICA 2">ELETRÔNICA 2</option>
+								  <option value="FUNDAMENTOS DE REDES">FUNDAMENTOS DE REDES</option>
+								  <option value="FUNDAMENTOS DE REDES 2">FUNDAMENTOS DE REDES 2</option>
+								  <option value="GERÊNCIA DE REDES E SISTEMAS">GERÊNCIA DE REDES E SISTEMAS</option>
+								  <option value="INSTALAÇÕES ELÉTRICAS">INSTALAÇÕES ELÉTRICAS</option>
+								  <option value="INSTALAÇÕES ELETRICAS">INSTALAÇÕES ELETRICAS</option>
+								  <option value="INSTRUMENTACAO DE CONTROLE">INSTRUMENTACAO DE CONTROLE</option>
+								  <option value="INSTRUMENTAÇÃO DE CONTROLE DE PROCESSOS">INSTRUMENTAÇÃO DE CONTROLE DE PROCESSOS</option>
+								  <option value="INTRODUÇÃO A ENGENHARIA DE REDES DE COMUNICACÃO">INTRODUÇÃO A ENGENHARIA DE REDES DE COMUNICACÃO</option>
+								  <option value="INTRODUCAO A ENGENHARIA ELETRICA">INTRODUCAO A ENGENHARIA ELETRICA</option>
+								  <option value="INTRODUÇÃO AO CONTROLE INTELIGENTE NUMÉRICO">INTRODUÇÃO AO CONTROLE INTELIGENTE NUMÉRICO</option>
+								  <option value="LABORATÓRIO DE ANÁLISE DINÂMICA LINEAR">LABORATÓRIO DE ANÁLISE DINÂMICA LINEAR</option>
+								  <option value="LABORATÓRIO DE ARQUITETURA DE PROCESSADORES DIGITAIS">LABORATÓRIO DE ARQUITETURA DE PROCESSADORES DIGITAIS</option>
+								  <option value="LABORATÓRIO DE ARQUITETURA E PROTOCOLOS DE REDES">LABORATÓRIO DE ARQUITETURA E PROTOCOLOS DE REDES</option>
+								  <option value="LABORATÓRIO DE CIRCUITOS ELÉTRICO 2">LABORATÓRIO DE CIRCUITOS ELÉTRICO 2</option>
+								  <option value="LABORATÓRIO DE CIRCUITOS ELÉTRICOS">LABORATÓRIO DE CIRCUITOS ELÉTRICOS</option>
+								  <option value="LABORATÓRIO DE CONTROLE DE PROCESSOS">LABORATÓRIO DE CONTROLE DE PROCESSOS</option>
+								  <option value="LABORATÓRIO DE CONTROLE DINÂMICO">LABORATÓRIO DE CONTROLE DINÂMICO</option>
+								  <option value="LABORATORIO DE CONVERSAO DE ENERGIA">LABORATORIO DE CONVERSAO DE ENERGIA</option>
+								  <option value="LABORATÓRIO DE CONVERSÃO ELETROMECÂNICA DE ENERGIA">LABORATÓRIO DE CONVERSÃO ELETROMECÂNICA DE ENERGIA</option>
+								  <option value="LABORATÓRIO DE DISPOSITIVOS E CIRCUITOS ELETRÔNICOS">LABORATÓRIO DE DISPOSITIVOS E CIRCUITOS ELETRÔNICOS</option>
+								  <option value="LABORATÓRIO DE ELETRICIDADE BÁSICA">LABORATÓRIO DE ELETRICIDADE BÁSICA</option>
+								  <option value="LABORATÓRIO DE ELETROMAGNETISMO 2">LABORATÓRIO DE ELETROMAGNETISMO 2</option>
+								  <option value="LABORATÓRIO DE ELETRÔNICA">LABORATÓRIO DE ELETRÔNICA</option>
+								  <option value="LABORATÓRIO DE ELETRÔNICA 2">LABORATÓRIO DE ELETRÔNICA 2</option>
+								  <option value="LABORATÓRIO DE INSTALAÇÕES ELÉTRICAS">LABORATÓRIO DE INSTALAÇÕES ELÉTRICAS</option>
+								  <option value="LABORATÓRIO DE MATERIAIS ELÉTRICOS E MAGNÉTICOS">LABORATÓRIO DE MATERIAIS ELÉTRICOS E MAGNÉTICOS</option>
+								  <option value="LABORATÓRIO DE PRINCÍPIOS DE COMUNICAÇÃO">LABORATÓRIO DE PRINCÍPIOS DE COMUNICAÇÃO</option>
+								  <option value="LABORATÓRIO DE SISTEMAS DIGITAIS">LABORATÓRIO DE SISTEMAS DIGITAIS</option>
+								  <option value="LABORATÓRIO DE SISTEMAS MICROPROCESSADOS">LABORATÓRIO DE SISTEMAS MICROPROCESSADOS</option>
+								  <option value="MAQUINAS ELETRICAS">MAQUINAS ELETRICAS</option>
+								  <option value="MATERIAIS ELÉTRICOS E MAGNÉTICOS">MATERIAIS ELÉTRICOS E MAGNÉTICOS</option>
+								  <option value="METODOLOGIA E DESENVOLVIMENTO DE SOFTWARE">METODOLOGIA E DESENVOLVIMENTO DE SOFTWARE</option>
+								  <option value="PRINCÍPIOS DE COMUNICAÇÃO">PRINCÍPIOS DE COMUNICAÇÃO</option>
+							<!--		<option value="CONTROLE DE PROCESSOS">PROJETO FINAL DE GRADUAÇÃO 1</option>
+								  <option value="CONTROLE DE PROCESSOS">PROJETO FINAL DE GRADUAÇÃO 2</option> -->
+								  <option value="PROJETO TRANSVERSAL EM REDES DE COMUNICAÇÃO 1">PROJETO TRANSVERSAL EM REDES DE COMUNICAÇÃO 1</option>
+								  <option value="REDES LOCAIS">REDES LOCAIS</option>
+								  <option value="SEGURANÇA DE REDES">SEGURANÇA DE REDES</option>
+								  <option value="SINAIS E SISTEMAS EM TEMPO CONTÍNUO">SINAIS E SISTEMAS EM TEMPO CONTÍNUO</option>
+								  <option value="SISTEMAS DE COMUNICACOES 1">SISTEMAS DE COMUNICACOES 1</option>
+								  <option value="SISTEMAS DE INFORMAÇÃO DISTRIBUÍDOS">SISTEMAS DE INFORMAÇÃO DISTRIBUÍDOS</option>
+								  <option value="SISTEMAS DIGITAIS">SISTEMAS DIGITAIS</option>
+								  <option value="SISTEMAS MICROPROCESSADOS">SISTEMAS MICROPROCESSADOS</option>
+								  <option value="SISTEMAS OPERACIONAIS DE REDES">SISTEMAS OPERACIONAIS DE REDES</option>
+								  <option value="TOPICOS EM ENGENHARIA">TOPICOS EM ENGENHARIA</option>
+								  <option value="TÓPICOS EM REDES DE COMUNICAÇÃO 1">TÓPICOS EM REDES DE COMUNICAÇÃO 1</option>
+								  <option value="TÓPICOS EM REDES DE COMUNICAÇÃO 2">TÓPICOS EM REDES DE COMUNICAÇÃO 2</option>
+								  <option value="TÓPICOS ESPECIAIS EM ENGENHARIA BIOMÉDICA">TÓPICOS ESPECIAIS EM ENGENHARIA BIOMÉDICA</option>
+								  <option value="TÓPICOS ESPECIAIS EM MICROELETRÔNICA">TÓPICOS ESPECIAIS EM MICROELETRÔNICA</option>
+							<!--		<option value="CONTROLE DE PROCESSOS">TRABALHO DE CONCLUSÃO DE CURSO 1</option>
+								  <option value="CONTROLE DE PROCESSOS">TRABALHO DE CONCLUSÃO DE CURSO 2</option> -->
+
+							  </select></label>
+						  </div>
+					<div class="form-group">
+					  <label for="pwd">Descrição:</label>
+					  <textarea type="comment" class="form-control" id="description" rows="3"></textarea>
+					</div>
+					<button id="btnSubmitModal" type="button" class="btn btn-default">Enviar</button>
+				</form>
+			   </div>
+			   <div class="modal-footer">
+				 <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+			   </div>
+			 </div>
+
+		   </div>
+		 </div>
+
+<div class="modal fade" id="myModal1" role="dialog">
+   <div class="modal-dialog modal-md" id="tamanho">
+
+	 <!-- Modal content-->
+			 <div class="modal-content">
+			   <div class="modal-header">
+				 <button type="button" class="close" data-dismiss="modal">&times;</button>
+				 <h4 class="modal-title">Detalhes</h4>
+			   </div>
+			   <div class="modal-body">
+				<h5 class="salai" style="text-align: center; font-size: 20px;">Ferramentas das Salas e Auditórios:</h5>
+				 <table style="width:100%; padding: 10px 0px;">
+					 <tr>
+					   <th>Laboratórios do SG-11</th>
+					   <th>Auditório do SG-11</th>
+
+					 </tr>
+					 <tr>
+					   <td>Até 45 pessoas</td>
+					   <td>Até 50 pessoas</td>
+
+					 </tr>
+					 <tr>
+					   <td>Até 25 computadores</td>
+					   <td>Nenhum computador</td>
+
+					 </tr>
+					 <tr>
+					   <td>1 quadro branco</td>
+					   <td>1 quadro-de-giz</td>
+
+					 </tr>
+					 <tr>
+					   <td>1 projetor</td>
+					   <td>1 projetor</td>
+					 </tr>
+					 <tr>
+					   <td>2 ar-condicionados</td>
+					   <td>2 ar-condicionados</td>
+
+					 </tr>
+				   </table>
+			   </div>
+			   <div class="modal-footer">
+				 <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+			   </div>
+			 </div>
+
+		   </div>
+		 </div>
+
+
+<div class="modal fade" id="myModal" role="dialog">
+	<div class="modal-dialog modal-lg" id="tamanho">
+
+	  <!-- Modal content-->
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <button type="button" class="close" data-dismiss="modal">&times;</button>
+				  <h4 class="modal-title">Detalhes</h4>
+				</div>
+				<div class="modal-body">
+				 <h5 class="salai" style="text-align: center; font-size: 20px;">Ferramentas das Salas e Auditórios:</h5>
+				  <table style="width:100%; padding: 10px 0px;">
+					  <tr>
+						<th>AT-11</th>
+						<th>AT-13</th>
+						<th>AT-15</th>
+						<th>AT-19</th>
+						<th>Auditório ENE</th>
+						<th>Lab-Redes</th>
+						<th>LCCC</th>
+
+					  </tr>
+					  <tr>
+						<td>Até 50 pessoas</td>
+						<td>Até 50 pessoas</td>
+						<td>Até 50 pessoas</td>
+						<td>Até 50 pessoas</td>
+						<td>Até 120 pessoas</td>
+						<td>Até 40 pessoas</td>
+						<td>Até 40 pessoas</td>
+
+					  </tr>
+					  <tr>
+						<td>Nenhum computador</td>
+						<td>Nenhum computador</td>
+						<td>Nenhum computador</td>
+						<td>Nenhum computador</td>
+						<td>Nenhum computador</td>
+						<td>Até 40 computadores</td>
+						<td>Até 40 computadores</td>
+
+					  </tr>
+					  <tr>
+						<td>1 quadro-de-giz</td>
+						<td>1 quadro-de-giz</td>
+						<td>1 quadro-de-giz</td>
+						<td>1 quadro-de-giz</td>
+						<td>1 quadro-de-giz</td>
+						<td>1 quadro branco</td>
+						<td>1 quadro branco</td>
+
+					  </tr>
+					  <tr>
+						<td>1 projetor</td>
+						<td>1 projetor</td>
+						<td>1 projetor</td>
+						<td>1 projetor</td>
+						<td>1 projetor</td>
+						<td>2 projetores</td>
+						<td>1 projetor</td>
+
+					  </tr>
+					  <tr>
+						<td>2 ar-condicionados</td>
+						<td>2 ar-condicionados</td>
+						<td>2 ar-condicionados</td>
+						<td>2 ar-condicionados</td>
+						<td>5 ar-condicionados</td>
+						<td>2 ar-condicionados</td>
+						<td>2 ar-condicionados</td>
+
+					  </tr>
+					</table>
+				</div>
+				<div class="modal-footer">
+				  <button type="button" class="btn btn-default" data-dismiss="modal">Fechar</button>
+				</div>
+			  </div>
+
+			</div>
+		  </div>
 </html>

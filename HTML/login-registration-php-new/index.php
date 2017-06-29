@@ -28,6 +28,8 @@
       <!-- Skin -->
       <link rel="stylesheet" href="css/colors/blue.css" class="colors">
 
+      <link href="css/dataTables.bootstrap.css" rel="stylesheet">
+
 
       <!-- Favicons -->
       <link rel="shortcut icon" href="img/ico/favicon.ico">
@@ -70,7 +72,7 @@
                                           <div class="col-md-2 mob-logo">
                                                 <div class="row">
                                                       <div class="site-logo">
-                                                            <a href="index.html"><img src="logo1.png" alt="ReservENE"></a>
+                                                            <a href="index.php"><img src="logo1.png" alt="ReservENE"></a>
                                                       </div>
                                                 </div>
                                           </div>
@@ -137,6 +139,22 @@
                                  </div>
                               </div>
 
+                              <div class="col-md-12 big-title wow bounceIn">
+                                <table width="100%" class="table table-striped table-bordered table-hover" id="dataTables-example">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Disciplina</th>
+                                            <th>Sala</th>
+                                            <th>Horário</th>
+                                        </tr>
+                                    </thead>
+
+                                    </tbody>
+                                </table>
+                                <!-- /.table-responsive -->
+                            </div>
+
 
 
 
@@ -187,6 +205,8 @@
 
       <!-- The Scripts -->
       <script src="js/jquery.min.js"></script>
+      <script src='js/lib/moment.min.js'></script>
+      <script src='js/locale/pt-br.js'></script>
       <script src="js/jquery-migrate-1.0.0.js"></script>
       <script src="js/jquery-ui.js"></script>
       <script src="js/bootstrap.min.js"></script>
@@ -213,6 +233,58 @@
       <script src="js/jquery.mb.YTPlayer.js"></script>
       <script src="js/tytabs.js"></script>
       <script src="js/custom.js"></script>
+      <script src="js/jquery.dataTables.min.js"></script>
+      <script src="js/dataTables.bootstrap.min.js"></script>
+      <script src="js/dataTables.responsive.js"></script>
 
+      <script>
+
+          var oTable;
+
+          $(document).ready(function() {
+
+              oTable = $('#dataTables-example').DataTable({
+                  "ajax": "get_monitorias.php",
+                  'columnDefs': [{
+                      'targets': 0,
+                      'searchable': false,
+                      'orderable': false,
+                      'className': 'dt-body-center',
+                      'render': function (data, type, row, meta){
+  							return '<i class="fa fa-check" aria-hidden="true" style="color:green"></i>';
+  					}
+                  },
+                  {
+                      "targets": [2],
+                      "orderable": false
+                  },
+                  ],
+                  "responsive": true,
+                  "language": {
+                      "sEmptyTable": "Nenhum registro encontrado",
+                      "sInfo": "Mostrando de _START_ até _END_ de _TOTAL_ registros",
+                      "sInfoEmpty": "Mostrando 0 até 0 de 0 registros",
+                      "sInfoFiltered": "(Filtrados de _MAX_ registros)",
+                      "sInfoPostFix": "",
+                      "sInfoThousands": ".",
+                      "sLengthMenu": "_MENU_ resultados por página",
+                      "sLoadingRecords": "Carregando...",
+                      "sProcessing": "Processando...",
+                      "sZeroRecords": "Nenhum registro encontrado",
+                      "sSearch": "Pesquisar",
+                      "oPaginate": {
+                          "sNext": "Próximo",
+                          "sPrevious": "Anterior",
+                          "sFirst": "Primeiro",
+                          "sLast": "Último"
+                      },
+                      "oAria": {
+                          "sSortAscending": ": Ordenar colunas de forma ascendente",
+                          "sSortDescending": ": Ordenar colunas de forma descendente"
+                      }
+                  },
+              });
+          });
+      </script>
 </body>
 </html>

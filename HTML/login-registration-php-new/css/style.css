@@ -1,30 +1,30 @@
 /*-------------------------------------------------
  =  Table of Css
 
- 1.General code                             
- 2.Form code                              
- 3.Logo                          
- 4.Slider                  
- 5.Button       
+ 1.General code
+ 2.Form code
+ 3.Logo
+ 4.Slider
+ 5.Button
  6.Header
- 7.Title code                       
- 8.Section code 
- 9.About section                              
- 10.Service section                           
- 11.Parallax Section                             
- 12.Pricing Section                               
+ 7.Title code
+ 8.Section code
+ 9.About section
+ 10.Service section
+ 11.Parallax Section
+ 12.Pricing Section
  13.Portfolio Section
- 14.Accordion Tab                             
- 15.Testimonial section                             
- 16.Team section                            
+ 14.Accordion Tab
+ 15.Testimonial section
+ 16.Team section
  17.Progress bar section
  18.Fun facts section
  19.Quote section
  20.Subscription section
  21.Contact form section
  22.Footer section
- 23.Blog page 
- 24.Responsive Media Quaries  
+ 23.Blog page
+ 24.Responsive Media Quaries
 -------------------------------------------------*/
 
 /*-------------------------------------------------------*/
@@ -33,25 +33,23 @@
 
 html,
 body {
-        height:100%;
-        width:100%;
         color: #566473;
         background:#F1F4F9;
         font-family: "Open Sans",Helvetica,Arial,sans-serif;
         font-size: 14px;
         line-height: 24px;
 }
-    
+
 body {
     overflow-x:hidden
 }
-    
+
 h1, h2, h3, h4, h5, h6 {
     color: #566473;
     font-family: 'Raleway',sans-serif;
     font-weight: 600;
-}   
-    
+}
+
 h1 {
     font-size:36px;
     letter-spacing:1px;
@@ -81,7 +79,7 @@ h1 {
 
 /* List styles */
 ul.why {
-    
+
     list-style:none;
     padding:0;
     margin:0;
@@ -108,7 +106,7 @@ ul.why li:before {
 /* 2. Form code
 /*-------------------------------------------------------*/
 
-input.form-control, textarea.form-control { 
+input.form-control, textarea.form-control {
     border: solid 1px #CCC;
     background: #fff !important;
     box-shadow: none !important;
@@ -120,8 +118,8 @@ input.form-control, textarea.form-control {
 
 
 input:hover, textarea:hover,
-input:focus, textarea:focus { 
-    border-color: #C9C9C9; 
+input:focus, textarea:focus {
+    border-color: #C9C9C9;
 }
 
 
@@ -249,18 +247,18 @@ ul.fullwidth-slider li.slide .caption {
 ul.fullwidth-slider li.slide .caption .caption-inside {
     position: absolute;
     top: 0px;
-    width:100%;  
+    width:100%;
 }
 
 ul.fullwidth-slider li.slide .caption .slide-caption {
-    height: 100%;  
+    height: 100%;
     z-index: 0;
     display: table;
     position: relative;
     top: 0;
     width:80%;
     margin-left:10%;
-    margin-right:10%;  
+    margin-right:10%;
 }
 
 ul.fullwidth-slider li.slide .caption .slide-caption .vertical-align-middle{
@@ -311,7 +309,7 @@ ul.fullwidth-slider, ul.fullwidth-slider .caption-inside {
     background: url(../img/texture_layer.png) repeat;
     background-color: rgba(0, 0, 0, 0.5);
     padding: 110px 0 32px;
-    height: 100%; 
+    height: 100%;
     /* Incase of overlay problems just increase the min-height*/
 }
 
@@ -363,9 +361,9 @@ ul.fullwidth-slider, ul.fullwidth-slider .caption-inside {
 
 
 div.mc-image {
-    -webkit-transition: opacity 1s ease-in-out; 
-    -moz-transition: opacity 1s ease-in-out; 
-    -o-transition: opacity 1s ease-in-out; 
+    -webkit-transition: opacity 1s ease-in-out;
+    -moz-transition: opacity 1s ease-in-out;
+    -o-transition: opacity 1s ease-in-out;
     transition: opacity 1s ease-in-out;
     -webkit-background-size: cover;
     -moz-background-size: cover;
@@ -386,7 +384,7 @@ div.mc-image {
 }
 
 .slide-content {
-    height: 100%;  
+    height: 100%;
     display: table;
     margin: 0 auto;
     position: relative;
@@ -430,7 +428,7 @@ ul.text-slide {
     margin-top: 30px;
 }
 
-.welcome {  
+.welcome {
     font-family: "Pacifico","Times New Roman",Times,serif;
     font-size: 40px;
     line-height:40px;
@@ -446,7 +444,7 @@ ul.text-slide {
 .slide-content a {
     margin:10px 0;
 }
-    
+
 .align-center {
     display: table-cell;
     text-align: center;
@@ -608,7 +606,7 @@ ul.text-slide {
     color: #566473 !important;
     font-size: 14px;
     font-weight: 600;
-    padding: 10px 20px; 
+    padding: 10px 20px;
     outline: none;
     text-decoration: none;
     text-transform: uppercase;
@@ -632,9 +630,9 @@ ul.text-slide {
 }
 
 .dropdown-menu > li > a:hover,
-.dropdown-menu > li > a:focus, 
-.dropdown-menu > .active > a, 
-.dropdown-menu > .active > a:hover, 
+.dropdown-menu > li > a:focus,
+.dropdown-menu > .active > a,
+.dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
     background-color: #E0E1E7;
     background-image: none;
@@ -963,7 +961,7 @@ div.content-box.big div.content-box-info p {
     width: 100px;
     height: 100px;
     border-radius: 50%;
-    
+
     top: 10px;
     left: 10px;
 }
@@ -992,13 +990,13 @@ div.content-box.big div.content-box-info p {
     height: 100%;
     border-radius: 50%;
     background-position: center center;
-    
+
     -webkit-backface-visibility: hidden; /*Just for webkit to have a smooth font*/
 }
 
 .ch-item:hover .ch-info-front {
     background: #566473 !important
-} 
+}
 
 
 /*-------------------------------------------------------*/
@@ -1056,7 +1054,7 @@ div.content-box.big div.content-box-info p {
 .image-parallax .slide-content {
     width: 90%;
     margin-right:5%;
-    margin-left: 5%; 
+    margin-left: 5%;
 }
 
 .about-wrap {
@@ -1067,7 +1065,7 @@ div.content-box.big div.content-box-info p {
 
 .testimonial-wrap {
     background: url('../img/plx2.jpg') 50% 0 no-repeat fixed;
-    
+
 }
 
 .quote-wrap {
@@ -1152,7 +1150,7 @@ div.content-box.big div.content-box-info p {
 /* 13. Portfolio Section
 /*-------------------------------------------------------*/
 
-/* Portfolio Filters */ 
+/* Portfolio Filters */
 
 #filters {
     margin-top: 10px;
@@ -1171,7 +1169,7 @@ div.content-box.big div.content-box-info p {
 }
 
 #filters ul li a {
-    display: block; 
+    display: block;
 }
 
 #filters ul li a h5 {
@@ -1196,7 +1194,7 @@ div.content-box.big div.content-box-info p {
 
 
 
-/* Portfolio Items */   
+/* Portfolio Items */
 
     #portfolio-wrap {
         position: relative;
@@ -1205,7 +1203,7 @@ div.content-box.big div.content-box-info p {
         margin: 0 auto;
         display: block;
     }
-    
+
     #portfolio-wrap .one-four {
         margin: 0!important;
         line-height:0;
@@ -1213,7 +1211,7 @@ div.content-box.big div.content-box-info p {
         padding: 0;
         position:relative;
     }
-    
+
     .portfolio-item {
         padding: 0;
         position: relative;
@@ -1317,8 +1315,8 @@ div.content-box.big div.content-box-info p {
     -o-transition:all 0.3s ease 0s;
     transition: all 0.3s ease 0s;
 }
-    
-/* Portfolio Isotope Transitions */ 
+
+/* Portfolio Isotope Transitions */
 
     .isotope, .isotope .isotope-item {
         -webkit-transition-duration: 0.8s;
@@ -1327,7 +1325,7 @@ div.content-box.big div.content-box-info p {
         -o-transition-duration: 0.8s;
         transition-duration: 0.8s;
     }
-    
+
     .isotope {
         -webkit-transition-property: height, width;
         -moz-transition-property: height, width;
@@ -1335,7 +1333,7 @@ div.content-box.big div.content-box-info p {
         -o-transition-property: height, width;
         transition-property: height, width;
     }
-    
+
     .isotope .isotope-item {
         -webkit-transition-property: -webkit-transform, opacity;
         -moz-transition-property: -moz-transform, opacity;
@@ -1343,7 +1341,7 @@ div.content-box.big div.content-box-info p {
         -o-transition-property: -o-transform, opacity;
         transition-property: transform, opacity;
     }
-    
+
     .isotope.no-transition, .isotope.no-transition .isotope-item, .isotope .isotope-item.no-transition {
         -webkit-transition-duration: 0s;
         -moz-transition-duration: 0s;
@@ -1408,7 +1406,7 @@ div.content-box.big div.content-box-info p {
 }
 
 #horizontal-tabs ul.tabs li {
-    
+
     cursor: pointer;
     float: left;
     font-size: 15px;
@@ -1495,7 +1493,7 @@ div.content-box.big div.content-box-info p {
 .our-clients .testimonial p, .our-clients .testimonials-arrow {
     border: none;
 }
-    
+
 
 .testimonials-arrow {
     display: block;
@@ -1899,7 +1897,7 @@ a.scrollup:hover i,a.scrollup:focus i {
 
 
 /*-------------------------------------------------------*/
-/* 23. Blog page 
+/* 23. Blog page
 /*-------------------------------------------------------*/
 
 .page article.post {
@@ -2171,7 +2169,7 @@ ol.commentlist, ol.commentlist li {
 .author-content .avatar {
     float: left;
     margin: 0 20px 0 0;
-    
+
 }
 
 .avatar {
@@ -2421,7 +2419,7 @@ ol.commentlist li:first-child {
     div.content-box.big, .contact-box {
         margin-bottom: 20px;
     }
-    
+
 
     .mob-logo {
         display: inline-block;
@@ -2501,7 +2499,7 @@ ol.commentlist li:first-child {
     div.content-box.big, .contact-box {
         margin-bottom: 20px;
     }
-    
+
 
     .mob-logo {
         display: inline-block;
